@@ -2,16 +2,23 @@ package main
 
 import (
 	"net/http"
+	"projects/config"
 
 	"github.com/labstack/echo/v4"
 )
 
-const port string = ":8000"
+type HelloWorld struct {
+	Message string `json:"message"`
+}
 
 func main() {
 	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
+	e.GET("/", Greetings)
+	e.Logger.Fatal(e.Start(config.Port))
+}
+
+func Greetings(c echo.Context) error {
+	return c.JSON(http.StatusOK, HelloWorld{
+		Message: "Hello World",
 	})
-	e.Logger.Fatal(e.Start(port))
 }
