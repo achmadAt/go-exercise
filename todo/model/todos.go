@@ -49,3 +49,28 @@ func PostTodos(name string) error {
 	fmt.Println(result)
 	return nil
 }
+
+func UpdateTodos(id int, name string) error {
+	con := db.Connect()
+	valid := validator.New()
+	data := dto.Todo{
+		Id:   id,
+		Name: name,
+	}
+	valid.Struct(data)
+	sqlStatement := "UPDATE todos set name ? where id ?"
+	statement, err := con.Prepare(sqlStatement)
+	if err != nil {
+		return err
+	}
+	result, err := statement.Exec(id, name)
+	if err != nil {
+		return err
+	}
+	fmt.Println(result)
+	return nil
+}
+
+func DeleteTodo(id int) error {
+	return nil
+}

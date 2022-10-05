@@ -1,7 +1,7 @@
 package dto
 
 type Todo struct {
-	Id   string `json:"id,omitempty"`
+	Id   int    `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
 }
 
