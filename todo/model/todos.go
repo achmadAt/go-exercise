@@ -4,19 +4,10 @@ import (
 	_ "database/sql"
 	"fmt"
 	"todo/config"
-	//"todo/dto"
+	"todo/dto"
 )
 
-type Todo struct {
-	Id   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
-}
-
-type Todos struct {
-	Todos []Todo `json:"todos,omitempty"`
-}
-
-func GetTodo() Todos {
+func GetTodo() dto.Todos {
 	con := config.Connect()
 	sqlStatement := "SELECT id, name FROM todos"
 	rows, err := con.Query(sqlStatement)
@@ -25,9 +16,9 @@ func GetTodo() Todos {
 		panic(err.Error())
 	}
 	defer rows.Close()
-	result := Todos{}
+	result := dto.Todos{}
 	for rows.Next() {
-		todo := Todo{}
+		todo := dto.Todo{}
 		err := rows.Scan(&todo.Id, &todo.Name)
 		if err != nil {
 			fmt.Println(err)
