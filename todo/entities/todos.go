@@ -1,7 +1,11 @@
 package entities
 
-type ToDo struct {
-	ID int
-	Task string
-	status string
+type User struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
+
+var (
+	Users = map[int]*User{}
+	Seq   = 1
+)
