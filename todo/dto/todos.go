@@ -1,7 +1,10 @@
 package dto
 
+type Todo struct {
+	Id   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
 type Todos struct {
-	Id     string `json:"id,omitempty"`
-	Name   string `json:"name,omitempty"`
-	IsDone bool   `json:"is_done,omitempty"`
+	Todos []Todo `json:"todos,omitempty"`
 }

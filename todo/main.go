@@ -1,11 +1,13 @@
 package main
 
 import (
+	//"fmt"
 	"log"
 
 	"os"
 
-	"database/sql"
+	//"database/sql"
+	"todo/config"
 	"todo/model"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -30,11 +32,7 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	//db
-	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/todos")
-	if err != nil {
-		panic(err.Error())
-	}
-	db.Ping()
+	config.Connect()
 	// Routes
 	e.GET("/users", model.GetAllUsers)
 	e.POST("/users", model.CreateUser)
