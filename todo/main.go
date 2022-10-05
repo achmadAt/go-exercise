@@ -9,6 +9,7 @@ import (
 	//"database/sql"
 	"todo/config"
 	"todo/model"
+	"todo/repository"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -34,6 +35,7 @@ func main() {
 	//db
 	config.Connect()
 	// Routes
+	e.GET("/todo", repository.GetTodo)
 	e.GET("/users", model.GetAllUsers)
 	e.POST("/users", model.CreateUser)
 	e.GET("/users/:id", model.GetUser)
