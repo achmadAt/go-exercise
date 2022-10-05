@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"os"
 
+	"database/sql"
 	"todo/model"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,7 +29,12 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 	port := os.Getenv("PORT")
-	fmt.Println(port)
+	//db
+	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/todos")
+	if err != nil {
+		panic(err.Error())
+	}
+	db.Ping()
 	// Routes
 	e.GET("/users", model.GetAllUsers)
 	e.POST("/users", model.CreateUser)
