@@ -3,12 +3,12 @@ package model
 import (
 	_ "database/sql"
 	"fmt"
-	"todo/config"
+	"todo/db"
 	"todo/dto"
 )
 
 func GetTodo() dto.Todos {
-	con := config.Connect()
+	con := db.Connect()
 	sqlStatement := "SELECT id, name FROM todos"
 	rows, err := con.Query(sqlStatement)
 	if err != nil {
