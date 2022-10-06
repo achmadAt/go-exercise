@@ -24,11 +24,11 @@ func UpdateTodos(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	result := model.UpdateTodos(conv_id, name)
+	result := model.UpdateTodos(name, conv_id)
 	return c.JSON(http.StatusAccepted, result)
 }
 func DeleteTodo(c echo.Context) error {
-	id := c.FormValue("id")
+	id := c.Param("id")
 	conv_id, err := strconv.Atoi(id)
 	if err != nil {
 		return err

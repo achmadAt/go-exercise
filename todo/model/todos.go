@@ -11,7 +11,7 @@ import (
 
 func GetTodo() dto.Todos {
 	con := db.Connect()
-	sqlStatement := "SELECT * FROM todos"
+	sqlStatement := "SELECT id, name FROM todos"
 	rows, err := con.Query(sqlStatement)
 	if err != nil {
 		fmt.Println(err)
@@ -50,7 +50,7 @@ func PostTodos(name string) error {
 	return nil
 }
 
-func UpdateTodos(id int, name string) error {
+func UpdateTodos(name string, id int) error {
 	con := db.Connect()
 	valid := validator.New()
 	data := dto.Todo{
@@ -58,12 +58,12 @@ func UpdateTodos(id int, name string) error {
 		Name: name,
 	}
 	valid.Struct(data)
-	sqlStatement := "UPDATE todos set name ? where id ?"
+	sqlStatement := "UPDATE todos SET name = ? WHERE id = ?"
 	statement, err := con.Prepare(sqlStatement)
 	if err != nil {
 		return err
 	}
-	result, err := statement.Exec(id, name)
+	result, err := statement.Exec(name, id)
 	if err != nil {
 		return err
 	}

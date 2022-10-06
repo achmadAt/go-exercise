@@ -31,11 +31,11 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 	port := os.Getenv("PORT")
+	//router
+	e.POST("/todo", repository.PostTodos)
+	e.GET("/", repository.GetTodo)
+	e.PUT("/todo", repository.UpdateTodos)
+	e.DELETE("/todo/:id", repository.DeleteTodo)
 	// Start server
 	e.Logger.Fatal(e.Start(port))
-	//route
-	e.POST("/todo", repository.PostTodos)
-	e.GET("/todo", repository.GetTodo)
-	e.PUT("/todo/:id", repository.UpdateTodos)
-	e.DELETE("/todo/:id", repository.DeleteTodo)
 }
