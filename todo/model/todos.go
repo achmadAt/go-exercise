@@ -42,6 +42,7 @@ func PostTodos(name string) error {
 	if err != nil {
 		return err
 	}
+	defer statement.Close()
 	result, err := statement.Exec(name)
 	if err != nil {
 		return err
@@ -63,6 +64,7 @@ func UpdateTodos(name string, id int) error {
 	if err != nil {
 		return err
 	}
+	defer statement.Close()
 	result, err := statement.Exec(name, id)
 	if err != nil {
 		return err
@@ -78,6 +80,7 @@ func DeleteTodo(id int) error {
 	if err != nil {
 		return err
 	}
+	defer statement.Close()
 	result, err := statement.Exec(id)
 	if err != nil {
 		return err
