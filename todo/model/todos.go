@@ -3,6 +3,7 @@ package model
 import (
 	_ "database/sql"
 	"fmt"
+	"net/http"
 	"todo/db"
 	"todo/dto"
 
@@ -30,7 +31,8 @@ func GetTodo() dto.Todos {
 	}
 	return result
 }
-func PostTodos(name string) error {
+func PostTodos(name string) (dto.Response, error) {
+	var res dto.Response
 	con := db.Connect()
 	valid := validator.New()
 	data := dto.Todo{
@@ -40,18 +42,24 @@ func PostTodos(name string) error {
 	sqlStatement := "INSERT into todos (name) VALUES (?)"
 	statement, err := con.Prepare(sqlStatement)
 	if err != nil {
-		return err
+		return res, err
 	}
 	defer statement.Close()
 	result, err := statement.Exec(name)
 	if err != nil {
-		return err
+		return res, err
 	}
-	fmt.Println(result)
-	return nil
+	last_id, err := result.LastInsertId()
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = map[string]int64{
+		"id_inserted": last_id,
+	}
+	return res, nil
 }
 
-func UpdateTodos(name string, id int) error {
+func UpdateTodos(name string, id int) (dto.Response, error) {
+	var res dto.Response
 	con := db.Connect()
 	valid := validator.New()
 	data := dto.Todo{
@@ -62,33 +70,52 @@ func UpdateTodos(name string, id int) error {
 	sqlStatement := "UPDATE todos SET name = ? WHERE id = ?"
 	statement, err := con.Prepare(sqlStatement)
 	if err != nil {
-		return err
+		return res, err
 	}
 	defer statement.Close()
 	result, err := statement.Exec(name, id)
 	if err != nil {
-		return err
+		return res, err
+	}
+	row_affected, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	res.Status = http.StatusOK
+	res.Message = "success"
+	res.Data = map[string]int64{
+		"row_affected": row_affected,
 	}
 	fmt.Println(result)
-	return nil
+	return res, nil
 }
 
-func DeleteTodo(id int) error {
+func DeleteTodo(id int) (dto.Response, error) {
+	var res dto.Response
 	con := db.Connect()
 	sqlStatement := "DELETE FROM todos WHERE id = ?"
 	statement, err := con.Prepare(sqlStatement)
 	if err != nil {
-		return err
+		return res, err
 	}
 	defer statement.Close()
 	result, err := statement.Exec(id)
 	if err != nil {
-		return err
+		return res, err
 	}
 	changed, err := result.RowsAffected()
 	if err != nil {
 		panic(err)
 	}
+	row_affected, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	res.Status = http.StatusOK
+	res.Message = "success"
+	res.Data = map[string]int64{
+		"row_affected": row_affected,
+	}
 	fmt.Println(changed)
-	return nil
+	return res, err
 }

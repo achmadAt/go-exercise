@@ -16,7 +16,6 @@ func Connect() *sql.DB {
 		fmt.Println("db is connected")
 	}
 	err = db.Ping()
-	fmt.Println(err)
 	if err != nil {
 		panic(err.Error())
 	}

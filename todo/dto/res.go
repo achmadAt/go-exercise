@@ -1,7 +1,7 @@
 package dto
 
-type Respones struct {
+type Response struct {
 	Status  int         `json:"status,omitempty"`
-	Message string      `json:"message,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
+	Message string      `json:"message,omitempty"`
 }
