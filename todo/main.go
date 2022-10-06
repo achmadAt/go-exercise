@@ -8,6 +8,8 @@ import (
 
 	//"database/sql"
 
+	"todo/repository"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -31,4 +33,9 @@ func main() {
 	port := os.Getenv("PORT")
 	// Start server
 	e.Logger.Fatal(e.Start(port))
+	//route
+	e.POST("/todo", repository.PostTodos)
+	e.GET("/todo", repository.GetTodo)
+	e.PUT("/todo/:id", repository.UpdateTodos)
+	e.DELETE("/todo/:id", repository.DeleteTodo)
 }

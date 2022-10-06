@@ -72,5 +72,20 @@ func UpdateTodos(id int, name string) error {
 }
 
 func DeleteTodo(id int) error {
+	con := db.Connect()
+	sqlStatement := "DELETE FROM todos WHERE id = ?"
+	statement, err := con.Prepare(sqlStatement)
+	if err != nil {
+		return err
+	}
+	result, err := statement.Exec(id)
+	if err != nil {
+		return err
+	}
+	changed, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(changed)
 	return nil
 }
