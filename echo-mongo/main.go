@@ -2,6 +2,7 @@ package main
 
 import (
 	"echo-mongo/config"
+	"echo-mongo/route"
 	"net/http"
 	"os"
 
@@ -26,6 +27,7 @@ func main() {
 	}))
 	config.ConnectDB()
 	//Router
+	route.TodoRoute(e)
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{
 			"message":  "Hello",

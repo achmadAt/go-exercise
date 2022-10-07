@@ -21,14 +21,18 @@ func ConnectDB() *mongo.Client {
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		panic(err)
 	}
 	fmt.Println("Connected")
 	return client
+}
+
+// client instance
+var DB *mongo.Client = ConnectDB()
+
+// get collection
+func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
+	collection := client.Database("golangApi").Collection(collectionName)
+	return collection
 }
