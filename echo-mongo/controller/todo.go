@@ -37,12 +37,12 @@ func CreateTodo(c echo.Context) error {
 	return c.JSON(http.StatusCreated, dto.Response{Status: http.StatusCreated, Message: "success", Data: &echo.Map{"data": result}})
 }
 
-func GetTodo() {
-
+func GetTodo(c echo.Context) error {
+	return nil
 }
-func UpdateTodo() {
-
+func UpdateTodo(c echo.Context) error {
+	return nil
 }
-func DeleteTodo() {
-
+func DeleteTodo(c echo.Context) error {
+	return nil
 }
