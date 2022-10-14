@@ -4,7 +4,6 @@ import (
 	"echo-mongo/config"
 	"echo-mongo/dto"
 	"echo-mongo/entities/utils"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -32,7 +31,6 @@ func CreateTodo(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	fmt.Println(todo.Name)
 	return c.JSON(http.StatusCreated, dto.Response{Status: http.StatusCreated, Message: "success", Data: &echo.Map{"data": result}})
 }
 
