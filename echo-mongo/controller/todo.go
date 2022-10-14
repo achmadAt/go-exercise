@@ -3,10 +3,10 @@ package controller
 import (
 	"echo-mongo/config"
 	"echo-mongo/dto"
+	"echo-mongo/entities/utils"
 	"fmt"
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,7 +14,6 @@ import (
 )
 
 var todoCollection *mongo.Collection = config.GetCollection(config.DB, "todo")
-var validate = validator.New()
 
 func CreateTodo(c echo.Context) error {
 	var todo dto.Todo
@@ -22,7 +21,7 @@ func CreateTodo(c echo.Context) error {
 	if err := c.Bind(&todo); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.Response{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"data": err.Error()}})
 	}
-	if err := validate.Struct(&todo); err != nil {
+	if err := utils.Validate(&todo); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.Response{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"struct": err}})
 	}
 	newTodo := dto.Todo{
