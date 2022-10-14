@@ -24,6 +24,16 @@ func ConnectDB() *mongo.Client {
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		panic(err)
 	}
+	//[] todo must use when service already cleared/finished
+	//[] todo need to move/fix this
+	defer func() {
+		if err = client.Disconnect(context.Background()); err != nil {
+			fmt.Printf("client.Disconnect error: %s", err)
+			return
+		}
+
+		fmt.Println("mongodb disconnected")
+	}()
 	fmt.Println("Connected")
 	return client
 }

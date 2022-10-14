@@ -4,6 +4,7 @@ import (
 	"echo-mongo/config"
 	"echo-mongo/dto"
 	"echo-mongo/entities/utils"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/net/context"
 )
 
@@ -33,6 +35,7 @@ func CreateTodo(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
+
 	return c.JSON(http.StatusCreated, dto.Response{Status: http.StatusCreated, Message: "success", Data: &echo.Map{"data": result}})
 }
 
@@ -68,8 +71,50 @@ func GetByName(c echo.Context) error {
 }
 
 func UpdateTodo(c echo.Context) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	id := c.FormValue("id")
+	name := c.FormValue("name")
+	hexId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	opts := options.Update().SetUpsert(true)
+	filter := bson.D{{Key: "_id", Value: hexId}}
+	payload := bson.D{{Key: "$set", Value: bson.D{{Key: "name", Value: name}}}}
+	result, err := todoCollection.UpdateOne(ctx, filter, payload, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if result.MatchedCount != 0 {
+		fmt.Println("match and replace an existing document")
+		return c.JSON(http.StatusAccepted, dto.Response{Status: http.StatusAccepted, Message: "ok", Data: &echo.Map{"updated": result.MatchedCount}})
+	}
+	if result.UpsertedCount != 0 {
+		return c.JSON(http.StatusAccepted, dto.Response{Status: http.StatusAccepted, Message: "ok", Data: &echo.Map{"upserted id": result.UpsertedID}})
+	}
 	return nil
 }
 func DeleteTodo(c echo.Context) error {
-	return nil
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	id := c.FormValue("id")
+	hexId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	opts := options.Delete().SetCollation(&options.Collation{
+		Locale:    "en_US",
+		Strength:  1,
+		CaseLevel: false,
+	})
+	payload := bson.D{{Key: "_id", Value: hexId}}
+	res, err := todoCollection.DeleteOne(ctx, payload, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return c.JSON(http.StatusAccepted, dto.Response{Status: http.StatusAccepted, Message: "ok", Data: &echo.Map{"deleted": res.DeletedCount}})
 }
+
+//default valu for pointer is nil, default value for primitive bool is false
+//
