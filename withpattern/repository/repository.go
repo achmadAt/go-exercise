@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"log"
 	"withpattern/model"
 
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,6 +27,7 @@ func NewRepository(collect *mongo.Collection) Repository {
 func (base *BaseRepository) GetTodo(ctx context.Context) ([]*model.Todo, error) {
 	result, err := base.collect.Find(ctx, bson.M{})
 	if err != nil {
+		log.Warn(err)
 		return nil, err
 	}
 	defer result.Close(ctx)
@@ -34,6 +35,7 @@ func (base *BaseRepository) GetTodo(ctx context.Context) ([]*model.Todo, error) 
 	for result.Next(ctx) {
 		var todo model.Todo
 		if err := result.Decode(&todo); err != nil {
+			log.Warn(err)
 			return nil, err
 		}
 		todos = append(todos, &todo)
@@ -47,7 +49,7 @@ func (b *BaseRepository) AddTodo(ctx context.Context, name string) (*mongo.Inser
 	}
 	result, err := b.collect.InsertOne(ctx, addTodo)
 	if err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return nil, err
 	}
 	return result, nil
@@ -56,14 +58,14 @@ func (b *BaseRepository) AddTodo(ctx context.Context, name string) (*mongo.Inser
 func (b *BaseRepository) UpdateTodo(ctx context.Context, id string, name string) (*mongo.UpdateResult, error) {
 	hexId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return nil, err
 	}
 	filter := bson.D{{Key: "_id", Value: hexId}}
 	payload := bson.D{{Key: "$set", Value: bson.D{{Key: "name", Value: name}}}}
 	result, err := b.collect.UpdateOne(ctx, filter, payload)
 	if err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return nil, err
 	}
 	return result, nil
@@ -72,13 +74,13 @@ func (b *BaseRepository) UpdateTodo(ctx context.Context, id string, name string)
 func (b *BaseRepository) DeleteTodo(ctx context.Context, id string) (*mongo.DeleteResult, error) {
 	hexId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return nil, err
 	}
 	payload := bson.D{{Key: "_id", Value: hexId}}
 	result, err := b.collect.DeleteOne(ctx, payload)
 	if err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return nil, err
 	}
 	return result, nil

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"withpattern/repository"
 	"withpattern/server"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -27,24 +27,24 @@ func main() {
 	}))
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://root:root@cluster0.66asf7z.mongodb.net/?retryWrites=true&w=majority"))
 	if err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return
 	}
 	database := client.Database("golangApi")
 	repo := repository.NewRepository(database.Collection("todo"))
 	service := service.NewService(repo)
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return
 	}
 	defer func() {
 		if err := client.Disconnect(ctx); err != nil {
-			log.Fatal(err)
+			log.Warn(err)
 			return
 		}
 	}()
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
-		log.Fatal(err)
+		log.Warn(err)
 		return
 	}
 	server.Server(ctx, e, service)
