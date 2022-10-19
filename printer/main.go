@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -33,12 +34,16 @@ func main() {
 			printers = append(printers, printer)
 		}
 	}
-	check_file, err := filepath.Abs("/home/alfazari/Pictures/Wallpapers/download1.jpeg")
+	jsonit, err := json.Marshal(printers)
+	if err != nil {
+		log.Fatal(err)
+	}
+	check_file, err := filepath.Abs("/home/alfazari/Pictures/Wallpapers/OUT.jpg")
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	pic := exec.Command(print, "-o", "media:5", "-o", "orientation-requested=4", "-o", "print-quality=5", check_file)
+	pic := exec.Command(print, "-o", "media:5", check_file)
 	_printed, error := pic.CombinedOutput()
 	if error != nil {
 		log.Fatal(error)
@@ -48,6 +53,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	list := string(jsonit[:])
+	fmt.Println(list)
 	fmt.Println(printed)
 	fmt.Println(dir)
 	fmt.Println(pic.Path)
