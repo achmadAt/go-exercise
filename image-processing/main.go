@@ -4,6 +4,10 @@ import (
 	//"os"
 
 	"fmt"
+	"image-processing/exif"
+	"log"
+
+	"github.com/ncruces/go-exiftool"
 	// go get -u github.com/disintegration/imaging
 	//"github.com/rwcarlsen/goexif/exif" // go get -u github.com/rwcarlsen/goexif/exif
 	//"github.com/rwcarlsen/goexif/mknote"
@@ -16,15 +20,19 @@ func main() {
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
-	exif, err := setupExifTool()
+	exiftserver, err := exiftool.NewServer("-ignoreMinorErrors")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
+		return
 	}
-	defer exif.Shutdown()
-	fixMetaJPEG("download.jpeg", "img2.jpeg")
-	a := rawOrientation("img.JPG")
-	fmt.Println(a)
-	addOrientation("download.jpeg")
+	defer exiftserver.Close()
+	exfiutil := exif.NewExifUtil(exiftserver)
+	err2 := exfiutil.AddOrientation("download.jpeg")
+	if err2 != nil {
+		log.Fatal(err)
+		return
+	}
+	fmt.Println(exfiutil.RawOrientation("download.jpeg"))
 	// filtered, err := exifremove.Remove(data)
 	// if err != nil {
 	// 	fmt.Printf("* " + err.Error() + "\n")
