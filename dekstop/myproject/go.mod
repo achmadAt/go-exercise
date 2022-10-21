@@ -1,8 +1,12 @@
-module changeme
+module myproject
 
 go 1.18
 
-require github.com/wailsapp/wails/v2 v2.1.0
+require (
+	github.com/rabbitmq/amqp091-go v1.5.0
+	github.com/sirupsen/logrus v1.9.0
+	github.com/wailsapp/wails/v2 v2.1.0
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
