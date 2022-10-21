@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"errors"
+	"image/color"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
@@ -41,6 +42,12 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	im, err := exif.Decode(file)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(im.Raw)
+	imaging.Rotate(image, float64(180), color.Gray16{})
 	imaging.Fit(image, 200, 200, imaging.Lanczos)
 	// reverseOrientation(image, "2")
 }
@@ -62,7 +69,6 @@ func serveImage(imgByte []byte) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 }
 func ReadImage(fpath string) *image.Image {
 	var img image.Image
