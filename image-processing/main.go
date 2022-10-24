@@ -7,6 +7,9 @@ import (
 	"image-processing/exif"
 	"log"
 
+	//"os/exec"
+	"runtime"
+
 	"github.com/ncruces/go-exiftool"
 	// go get -u github.com/disintegration/imaging
 	//"github.com/rwcarlsen/goexif/exif" // go get -u github.com/rwcarlsen/goexif/exif
@@ -20,6 +23,20 @@ func main() {
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
+	// cmd := exec.Command("chmod", "600", "/home/alfazari/go-exercise/image-processing/excutable/exiftool_unix.tgz")
+	// _, err := cmd.CombinedOutput()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	err := exif.SetupPaths()
+	if err != nil {
+		log.Fatal(err, "yo")
+	}
+	//exiftool.Exec = "/home/alfazari/go-exercise/image-processing/excutable/exiftool_unix.tgz"
+	// err := exif.SetupPaths()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 	exiftserver, err := exiftool.NewServer("-ignoreMinorErrors")
 	if err != nil {
 		log.Fatal(err)
@@ -32,6 +49,8 @@ func main() {
 		log.Fatal(err)
 		return
 	}
+	exfiutil.RawOrientation("image.jpeg")
+	fmt.Println(runtime.GOOS)
 	fmt.Println(exfiutil.RawOrientation("download.jpeg"))
 	// filtered, err := exifremove.Remove(data)
 	// if err != nil {

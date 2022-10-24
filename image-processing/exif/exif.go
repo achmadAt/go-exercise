@@ -27,7 +27,6 @@ func (b *BaseUtil) RawOrientation(filepath string) int {
 	if err != nil {
 		return 0
 	}
-
 	var orientation int
 	_, err = fmt.Fscanf(bytes.NewReader(out), "%d\n", &orientation)
 	if err != nil {
