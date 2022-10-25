@@ -1,8 +1,8 @@
 package exif
 
 import (
+	"fmt"
 	"os"
-	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -10,52 +10,23 @@ import (
 )
 
 var (
-	ServerMode                bool
-	BaseDir, DataDir, TempDir string
-	DngConverter              string
+	BaseDir string
 )
 
 func SetupPaths() (err error) {
-	exe, err := os.Executable()
+	BaseDir, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-	if exe, err := filepath.EvalSymlinks(exe); err != nil {
-		return err
-	} else {
-		BaseDir = filepath.Dir(exe)
-	}
-
-	DataDir = filepath.Join(BaseDir, "data")
-	TempDir = filepath.Join(os.TempDir(), "somethink")
+	fmt.Println(BaseDir)
 
 	switch runtime.GOOS {
 	case "windows":
-		exiftool.Exec = "/home/alfazari/go-exercise/image-processing/excutable/exiftool_windows/exiftool/exiftool.exe"
+		exiftool.Exec = BaseDir + "/excutable/exiftool_windows/exiftool/exiftool.exe"
 		exiftool.Arg1 = strings.TrimSuffix(exiftool.Exec, ".exe")
-	case "linux":
-		exiftool.Exec = "/home/alfazari/go-exercise/image-processing/excutable/unix/exiftool/exiftool"
-		//exiftool.Config = BaseDir + "/utils/exiftool_config.pl"
+	case "darwin", "linux":
+		exiftool.Exec = BaseDir + "/excutable/unix/exiftool/exiftool"
 	}
 
-	if testDataDir() == nil {
-		return nil
-	}
-	if data, err := os.UserConfigDir(); err != nil {
-		return err
-	} else {
-		DataDir = filepath.Join(data, "somethink")
-	}
-	return testDataDir()
-}
-
-func testDataDir() error {
-	if err := os.MkdirAll(DataDir, 0700); err != nil {
-		return err
-	}
-	if f, err := os.Create(filepath.Join(DataDir, "lastrun")); err != nil {
-		return err
-	} else {
-		return f.Close()
-	}
+	return nil
 }
