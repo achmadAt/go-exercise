@@ -9,10 +9,6 @@ import (
 	"github.com/ncruces/go-exiftool"
 )
 
-var (
-	BaseDir string
-)
-
 func SetupPaths() (err error) {
 	BaseDir, err := os.Getwd()
 	if err != nil {
