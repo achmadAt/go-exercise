@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"withpattern/model"
 	"withpattern/repository"
 	"withpattern/server"
 	"withpattern/service"
@@ -10,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -37,6 +39,11 @@ func main() {
 		log.Warn(err)
 		return
 	}
+	payload := model.Todo{
+		Id:   primitive.NewObjectID(),
+		Name: "test 26 test new",
+	}
+	database.Collection("test 26").InsertOne(ctx, payload)
 	defer func() {
 		if err := client.Disconnect(ctx); err != nil {
 			log.Warn(err)
