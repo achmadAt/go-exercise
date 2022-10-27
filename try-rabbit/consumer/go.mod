@@ -1,4 +1,4 @@
-module try-rabbit
+module consumer
 
 go 1.19
 
