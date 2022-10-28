@@ -1,4 +1,4 @@
-package consumer
+package util
 
 import (
 	"fmt"
@@ -92,7 +92,6 @@ func NewConsumer(amqpURI, exchange, exchangeType, queueName, key, ctag string) (
 	if err != nil {
 		return nil, fmt.Errorf("queue Consume: %s", err)
 	}
-
 	go handle(deliveries, c.done)
 
 	return c, nil
