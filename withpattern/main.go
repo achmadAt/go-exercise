@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"withpattern/model"
 	"withpattern/repository"
@@ -27,7 +28,11 @@ func main() {
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://root:root@cluster0.66asf7z.mongodb.net/?retryWrites=true&w=majority"))
+	client, err := mongo.Connect(
+		ctx,
+		options.Client().
+			ApplyURI("mongodb+srv://root:root@cluster0.66asf7z.mongodb.net/?retryWrites=true&w=majority"),
+	)
 	if err != nil {
 		log.Warn(err)
 		return
@@ -43,7 +48,11 @@ func main() {
 		Id:   primitive.NewObjectID(),
 		Name: "test 26 test new",
 	}
-	database.Collection("test 26").InsertOne(ctx, payload)
+	data, err := database.Collection("test 26").InsertOne(ctx, payload)
+	if err != nil {
+		log.Warn(err)
+	}
+	fmt.Println(data)
 	defer func() {
 		if err := client.Disconnect(ctx); err != nil {
 			log.Warn(err)
