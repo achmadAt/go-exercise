@@ -5,19 +5,20 @@ import (
 )
 
 func main() {
-	arr := []int{2, 3, 4, 5, 1}
-	seq := []int{2, 3, 4}
-	fmt.Println("[2,3,4,5,1], [2,3,4]", isSubsequence(arr, seq))
+	arr := []int{1, 2, 3, 4, 5, 6, 7}
+	seq := []int{4, 5, 6}
+	fmt.Println("[1,2,3,4,5,6,7], [4,5,6]", isSubsequence(arr, seq))
 }
 
 func isSubsequence(array []int, sequence []int) bool {
-	arrID := 0
 	seqID := 0
-	for arrID < len(array) && seqID < len(sequence) {
-		if array[arrID] == sequence[seqID] {
-			seqID += 1
+	for _, val := range array {
+		if seqID == len(sequence) {
+			break
 		}
-		arrID += 1
+		if val == sequence[seqID] {
+			seqID++
+		}
 	}
-	return arrID == seqID
+	return seqID == len(sequence)
 }

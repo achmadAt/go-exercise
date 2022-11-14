@@ -21,7 +21,6 @@ func removeDuplicates(nums []int) int {
 			nums[idx] = nums[i]
 		}
 	}
-
-	fmt.Println(nums, "with length", length)
+	fmt.Println(nums[idx], "nums in array without duplicates")
 	return idx + 1
 }
